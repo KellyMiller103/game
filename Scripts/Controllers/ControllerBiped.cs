@@ -8,7 +8,7 @@ public class ControllerBiped : MonoBehaviour {
 
 	private Dictionary<string, string> controls = new Dictionary<string, string>{
 		{ "moveUp", "W" },
-		{ "moveDown", "S" }
+		{ "moveDown", "S" },
 		{ "moveLeft", "A" },
 		{ "moveRight", "D" },
 		{ "jump", "Space" },
@@ -38,16 +38,16 @@ public class ControllerBiped : MonoBehaviour {
 	private bool onGround = true;
 	private bool onWall = false;
 
-	private float speedMaxZ = 10f;
-	private float speedMaxX = 10f;
+	public float speedMaxZ = 10f;
+	public float speedMaxX = 10f;
 	private float speedTargetZ = 0f;
 	private float speedTargetX = 0f;
 	private float speedCurrentZ = 0f;
 	private float speedCurrentX = 0f;
-	private float speedRunning = 2f; // Running multiplier
-	private float speedWallY = 10f; // Wall walking anti-gravity force
-	private float speedJump = 20f; // Vertical jumping impulse
-	private float speedComboJump = 30f; // Horizontal combo jumping impulse
+	public float speedRunning = 2f; // Running multiplier
+	public float speedWallY = 10f; // Wall walking anti-gravity force
+	public float speedJump = 20f; // Vertical jumping impulse
+	public float speedComboJump = 30f; // Horizontal combo jumping impulse
 
 	private Rigidbody rgb;
 	private ConstantForce cf;
@@ -134,6 +134,7 @@ public class ControllerBiped : MonoBehaviour {
 
 	private void Jump () {
 		if (jumps > 0 && abilities["jump"]) {
+			// Ground
 			if (onGround && abilities["groundJump"]) {
 				// Combo jump
 				if (abilities["comboJump"] && inputComboX) {
@@ -146,7 +147,8 @@ public class ControllerBiped : MonoBehaviour {
 				rgb.AddForce(transform.up * speedJump, ForceMode.Impulse);
 				jumpGround = false;
 			}
-			if (onWall && abilities["wallJump"]) {
+			// Wall
+			else if (onWall && abilities["wallJump"]) {
 				// Combo wall jump
 				if (abilities["comboJump"] && inputComboX) {
 					rgb.AddForce(transform.right * inputX * speedComboJump * -1f, ForceMode.Impulse);
@@ -158,7 +160,8 @@ public class ControllerBiped : MonoBehaviour {
 				rgb.AddForce(transform.up * speedJump, ForceMode.Impulse);
 				jumpWall = false;
 			}
-			if (!onGround && !onWall && abilities["airJump"]) {
+			// Air
+			else if (!onGround && !onWall && abilities["airJump"]) {
 				// Combo air jump
 				if (abilities["comboJump"] && inputComboX) {
 					rgb.AddForce(transform.right * inputX * speedComboJump * -1f, ForceMode.Impulse);
